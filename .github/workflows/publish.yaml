@@ -26,6 +26,8 @@ jobs:
       - run: poetry run vmgr -p
       - run: git config user.name "jmbski"
       - run: git config user.email "stirgejr@gmail.com"
+      - run: git checkout main
+      - run: git pull
       - run: git commit -am "Bump version"
       - run: git push
       - run: poetry build
