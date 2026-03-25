@@ -54,7 +54,9 @@ def get_pyproject() -> tuple[dict, str]:
 
 
 def get_vers_str(pyproject: dict | None = None) -> str:
-    pyproject, _ = pyproject or get_pyproject()
+    if pyproject is None:
+        pyproject, _ = get_pyproject()
+
     return utils.get_nested(pyproject, "tool.poetry.version")
 
 
