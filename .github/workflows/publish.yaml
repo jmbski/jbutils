@@ -27,10 +27,8 @@ jobs:
       - run: git config user.name "jmbski"
       - run: git config user.email "stirgejr@gmail.com"
       - run: git branch
-      - run: echo $(git branch)
-      - run: git checkout main
-      - run: git pull
-      - run: git commit -am "Bump version"
+      - run: git add .
+      - run: git commit -m "Bump version"
       - run: git push
       - run: poetry build
 
