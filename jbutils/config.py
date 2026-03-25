@@ -12,7 +12,7 @@ from jbutils.types import T, Patterns, DataPath, DataPathList
 from jbutils import utils
 
 
-""" 
+"""  
 sample_files_1 = {
     "common/tools/test.json": {"a": 5, "b": "b", "c": {"c1": 1, "c2": False}},
     "common/tools/test.yaml": {"a": 10, "b": "B", "c": [{"c1": 2, "c2": True}]},
