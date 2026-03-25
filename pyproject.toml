@@ -27,3 +27,4 @@ toml = "^0.10.2"
 [tool.poetry.scripts]
 jbutils = "jbutils.tools.cli:main"
 vmgr = "jbutils.tools.vmgr:main"
+jbutils-publish = "jbutils.tools.publish:main"

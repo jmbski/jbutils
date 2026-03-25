@@ -42,8 +42,7 @@ def get_version_numbers(version: str) -> tuple[int, ...]:
     return tuple(int(num) for num in version.split("."))
 
 
-def main():
-    """Main function"""
+def get_pyproject() -> tuple[dict, str]:
 
     dir_path = args.path or os.getcwd()
     pyproject_file = os.path.join(dir_path, "pyproject.toml")
@@ -51,9 +50,20 @@ def main():
     if not os.path.exists(pyproject_file):
         raise FileNotFoundError("pyproject.toml not found")
 
-    pyproject = utils.read_file(pyproject_file, cast=dict)
+    return utils.read_file(pyproject_file, cast=dict), pyproject_file
 
-    current_version = utils.get_nested(pyproject, "tool.poetry.version")
+
+def get_vers_str(pyproject: dict | None = None) -> str:
+    pyproject, _ = pyproject or get_pyproject()
+    return utils.get_nested(pyproject, "tool.poetry.version")
+
+
+def main():
+    """Main function"""
+
+    pyproject, pyproject_file = get_pyproject()
+
+    current_version = get_vers_str(pyproject)
 
     if not current_version:
         raise ValueError("Version not found in pyproject.toml")
