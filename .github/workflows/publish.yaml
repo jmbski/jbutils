@@ -27,6 +27,7 @@ jobs:
       - run: git config user.name "jmbski"
       - run: git config user.email "stirgejr@gmail.com"
       - run: git config remote.origin.url "git@github.com:jmbski/jbutils.git"
+      - run: git config --add --local core.sshCommand 'ssh -i /home/joseph/.ssh/unix-desktop'
       - run: git branch
       - run: git add .
       - run: git commit -m "Bump version"
