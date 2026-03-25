@@ -12,7 +12,7 @@ jobs:
 
     permissions:
       id-token: write
-      contents: read
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
@@ -29,8 +29,8 @@ jobs:
       #- run: git config remote.origin.url "git@github.com:jmbski/jbutils.git"
       #- run: git config remote.origin.url "https://github.com/jmbski/jbutils.git"
       #- run: git config --add --local core.sshCommand 'ssh -i /home/joseph/.ssh/unix-desktop'
-      - run: cat ignorethis.txt
-      - run: git branch
+      #- run: cat ignorethis.txt
+      #- run: git branch
       - run: git add .
       - run: git commit -m "Bump version"
       - run: git push origin HEAD:main
