@@ -26,6 +26,7 @@ jobs:
       - run: poetry run vmgr -p
       - run: git config user.name "jmbski"
       - run: git config user.email "stirgejr@gmail.com"
+      - run: git config remote.origin.url "git@github.com:jmbski/jbutils.git"
       - run: git branch
       - run: git add .
       - run: git commit -m "Bump version"
