@@ -1,0 +1,33 @@
+name: publish
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: pypi
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install poetry
+      - run: poetry install
+      - run: poetry run vmgr -p
+      - run: git config user.name "jmbski"
+      - run: git config user.email "stirgejr@gmail.com"
+      - run: git commit -am "Bump version"
+      - run: git push
+      - run: poetry build
+
+      - uses: pypa/gh-action-pypi-publish@release/v1
