@@ -1,0 +1,497 @@
+
+# 2025-05-26 05:17:32.847946
++cfg = Configurator(app_name="jbutils_test",author="jbutils")
+
+# 2025-05-26 05:26:03.626962
++import platform
+
+# 2025-05-26 05:26:09.234839
++platform.architecture()
+
+# 2025-05-26 05:26:19.275008
++platform.platform()
+
+# 2025-05-26 05:26:31.642576
++platform.system()
+
+# 2025-05-26 05:27:38.929807
++os.path.sep
+
+# 2025-05-26 05:35:58.890637
++os.path.splitext("")
+
+# 2025-05-26 05:36:31.387017
++os.path.basename("")
+
+# 2025-05-26 05:36:44.211102
++os.path.splitext(os.path.basename(""))[1]
+
+# 2025-05-26 06:02:23.440878
++a = "/home/joseph/coding_base/jbutils/jbutils/utils/config.py"
+
+# 2025-05-26 06:02:33.744334
++b = "/home/joseph/coding_base/jbutils/jbutils/tools/cli.py"
+
+# 2025-05-26 06:02:42.632426
++os.path.commonpath(a,b)
+
+# 2025-05-26 06:02:56.688364
++os.path.commonpath([a,b])
+
+# 2025-05-26 06:04:25.111763
++os.path.split(a)
+
+# 2025-05-26 06:04:38.271756
++a.split(os.path.sep)
+
+# 2025-05-26 06:06:00.343412
++a = os.path.commonpath(a,b)
+
+# 2025-05-26 06:06:07.535393
++a = os.path.commonpath([a,b])
+
+# 2025-05-26 06:06:15.327237
++a = "/home/joseph/coding_base/jbutils/jbutils/utils/config.py"
+
+# 2025-05-26 06:06:23.231325
++root = os.path.commonpath([a,b])
+
+# 2025-05-26 06:06:42.024039
++c = a.replace(root,"")
+
+# 2025-05-26 06:06:42.855492
++c
+
+# 2025-05-26 06:08:49.904244
++def split(path: str) -> list[str]:
++    split_path = []
++    while os.path.split(path)[0]:
++        pass
+
+# 2025-05-26 06:08:57.047799
++os.path.split("")
+
+# 2025-05-26 06:09:11.335685
++os.path.split("/root/test")
+
+# 2025-05-26 06:09:27.415866
++x,y = os.path.split("/root/test")
+
+# 2025-05-26 06:09:31.447788
++x
+
+# 2025-05-26 06:09:43.104420
++x,y = os.path.split(x)
+
+# 2025-05-26 06:09:45.775614
++x
+
+# 2025-05-26 06:09:47.943570
++y
+
+# 2025-05-26 06:09:57.863616
++x,y = os.path.split(x)
+
+# 2025-05-26 06:09:58.959390
++x
+
+# 2025-05-26 06:10:01.240115
++y
+
+# 2025-05-26 06:10:15.543795
++x,y = os.path.split(x)
+
+# 2025-05-26 06:10:16.543995
++x
+
+# 2025-05-26 06:10:43.623993
++x = "C:\\root\\test"
+
+# 2025-05-26 06:10:50.056016
++os.path.split(x)
+
+# 2025-05-26 06:10:59.320247
++import pathlib
+
+# 2025-05-26 06:11:26.392313
++pathlib.Path.as_posix(x)
+
+# 2025-05-26 06:18:40.839211
++from platform import platform
+
+# 2025-05-26 06:18:44.231203
++def get_os_sep() -> str:
++    if platform() == "Windows":
++        return "\\"
++    else:
++        return "/"
+
+# 2025-05-26 06:18:48.815124
++get_os_sep()
+
+# 2025-05-26 06:18:59.559847
++def split_path(path: str) -> list[str]:
++    path_split = []
++    head, tail = os.path.split(path)
++    if not tail:
++        return [head.replace(get_os_sep(), "")]
++    path_split.append(tail)
++    max_depth = 32
++    count = 0
++    while tail and count < max_depth:
++        head, tail = os.path.split(head)
++        if tail:
++            path_split.insert(0,tail)
++        count += 1
++    return path_split
+
+# 2025-05-26 06:19:06.246985
++a
+
+# 2025-05-26 06:19:11.175011
++split_path(a)
+
+# 2025-05-26 06:19:18.078997
++split_path(c)
+
+# 2025-05-26 06:24:54.470242
++sample_files_2
+
+# 2025-05-26 06:27:02.326131
++#cfg = Configurator(app_name="jbutils_test",author="jbutils",files
+
+# 2025-05-26 06:27:15.733849
++cfg = Configurator(app_name="jbutils_test",author="jbutils",files=sample_files_2)
+
+# 2025-05-26 06:27:51.333178
++cfg.cfg_dir
+
+# 2025-05-26 06:29:38.029012
++cfg._data
+
+# 2025-05-26 06:33:36.852683
++cfg = Configurator(app_name="jbutils_test",author="jbutils",files=sample_files_2)
+
+# 2025-05-26 06:36:25.859219
++cfg._data
+
+# 2025-05-26 06:37:05.083686
++cfg = Configurator(app_name="jbutils_test",author="jbutils",files=sample_files_2)
+
+# 2025-05-26 06:37:13.835753
++jbutils.pretty_print(cfg._data)
+
+# 2025-05-26 06:38:09.531980
++cfg = Configurator(app_name="jbutils_test",author="jbutils",files=sample_files_2)
+
+# 2025-05-26 06:38:34.307102
++jbutils.pretty_print(cfg._data)
+
+# 2025-05-26 06:44:23.390295
++cfg = Configurator(app_name="jbutils_test",author="jbutils",files=sample_files_2)
+
+# 2025-05-26 06:44:25.181746
++jbutils.pretty_print(cfg._data)
+
+# 2025-05-26 06:47:27.459122
++jbutils.get_ext("test.json")
+
+# 2025-05-26 06:47:49.459304
++cfg = Configurator(app_name="jbutils_test",author="jbutils",files=sample_files_2)
+
+# 2025-05-26 06:47:58.443078
++cfg.get("init.a")
+
+# 2025-05-26 06:48:08.818437
++cfg.get("init.c.c1")
+
+# 2025-05-26 06:48:49.642296
++cfg.get("common.tools.test2.c.0.c1")
+
+# 2025-05-26 07:06:43.641435
++cfg = Configurator(app_name="jbutils_test",author="jbutils",files=sample_files_2)
+
+# 2025-05-26 07:07:12.257200
++t1 = cfg.get_as_class(Test1, "common.tools.test1")
+
+# 2025-05-26 07:07:16.169169
++t1.a
+
+# 2025-05-26 07:07:18.952794
++t1.b
+
+# 2025-05-26 07:15:03.542460
++cfg = Configurator(app_name="jbutils_test2",author="jbutils",files=sample_files_1)
+
+# 2025-05-26 07:16:35.812800
++cfg = Configurator(app_name="jbutils_test",author="jbutils",files=sample_files_2)
+
+# 2025-05-26 07:20:52.266234
++cfg._path_map
+
+# 2025-05-26 07:29:03.126086
++cfg = Configurator(app_name="jbutils_test",author="jbutils",files=sample_files_2)
+
+# 2025-05-26 07:29:28.077551
++cfg.set("init.yaml.b","new value")
+
+# 2025-05-26 07:31:57.292711
++cfg = Configurator(app_name="jbutils_test",author="jbutils",files=sample_files_2)
+
+# 2025-05-26 07:32:05.460560
++cfg.set("init.b","new value")
+
+# 2025-05-26 07:32:50.283858
++cfg.set("common.tools.test2.c.0.c1",3)
+
+# 2025-05-26 07:33:55.731424
++cfg.set("common.tools.test2.a",3)
+
+# 2025-05-26 07:34:12.707781
++cfg._path_map
+
+# 2025-05-26 07:52:54.318941
++cfg = Configurator(app_name="jbutils_test",author="jbutils",files=sample_files_2)
+
+# 2025-05-26 07:53:02.974447
++cfg.get("init")
+
+# 2025-05-26 07:53:25.070501
++cfg.set("init.a",20)
+
+# 2025-05-26 07:53:28.062739
++cfg.get("init")
+
+# 2025-05-26 07:53:38.086982
++cfg = Configurator(app_name="jbutils_test",author="jbutils",files=sample_files_2)
+
+# 2025-05-26 07:53:39.831201
++cfg.get("init")
+
+# 2025-05-26 07:53:51.022599
++cfg = Configurator(app_name="jbutils_test",author="jbutils",files=sample_files_2,reset_cfgs=True)
+
+# 2025-05-26 07:56:46.414755
++cfg.get("init.a")
+
+# 2025-05-26 07:56:54.606714
++cfg.set("init.a",20)
+
+# 2025-05-26 07:56:56.430808
++cfg.get("init.a")
+
+# 2025-05-26 07:57:02.078720
++cfg = Configurator(app_name="jbutils_test",author="jbutils",files=sample_files_2)
+
+# 2025-05-26 07:57:04.206342
++cfg.get("init.a")
+
+# 2025-05-26 07:57:08.999143
++cfg = Configurator(app_name="jbutils_test",author="jbutils",files=sample_files_2,reset_cfgs=True)
+
+# 2025-05-26 07:57:10.726842
++cfg.get("init.a")
+
+# 2025-05-26 07:57:24.590400
++sample_files_2
+
+# 2025-05-26 07:57:34.150604
++cfg = Configurator(app_name="jbutils_test",author="jbutils",files=sample_files_2,reset_cfgs=True)
+
+# 2025-05-26 07:57:36.743099
++cfg.get("init.a")
+
+# 2025-06-01 10:11:30.313059
++jbutils.set_nested(sample_files_2,"common.tools.test.[0]",4)
+
+# 2025-06-01 10:11:33.168557
++sample_files_2
+
+# 2025-06-01 10:12:15.264454
++jbutils.set_nested(sample_files_2,"common.tools.test.+",10)
+
+# 2025-06-01 10:12:16.736422
++sample_files_2
+
+# 2025-06-01 10:12:56.264502
++jbutils.set_nested(sample_files_2,"common.tools.test.0",2)
+
+# 2025-06-01 10:12:59.768065
++sample_files_2
+
+# 2025-06-01 10:13:17.367792
++jbutils.set_nested(sample_files_2,"common.tools.test.[0]",2)
+
+# 2025-06-01 10:13:49.551804
++sample_files_2
+
+# 2025-06-01 10:13:54.528096
++jbutils.set_nested(sample_files_2,"common.tools.test.[0]",4)
+
+# 2025-06-01 10:13:56.024038
++sample_files_2
+
+# 2025-06-01 10:39:15.382597
++cfg = Configurator(app_name="cfgtest")
+
+# 2025-06-01 10:42:11.885296
++data = {"a": "test"}
+
+# 2025-06-01 10:43:14.876659
++cfg._get_files_dict("test.yaml",data)
+
+# 2025-06-01 10:44:12.308357
++cfg._get_files_dict("test.yaml",data,["saved_data"])
+
+# 2025-06-01 10:47:04.892680
++cfg = Configurator(app_name="cfgtest")
+
+# 2025-06-01 10:47:13.740663
++cfg._get_files_dict("test.yaml",data,["saved_data"])
+
+# 2025-06-01 10:47:19.140671
++data = {"a": "test"}
+
+# 2025-06-01 10:47:20.652599
++cfg._get_files_dict("test.yaml",data,["saved_data"])
+
+# 2025-06-01 10:48:10.740233
++cfg.get("saved_data.test.a")
+
+# 2025-06-01 10:48:27.347912
++cfg.get("saved_data")
+
+# 2025-06-01 10:48:36.060415
++cfg.get("saved_data.test")
+
+# 2025-06-01 10:48:50.732213
++cfg = Configurator(app_name="cfgtest")
+
+# 2025-06-01 10:48:52.540184
++cfg.get("saved_data.test")
+
+# 2025-06-01 10:49:57.764753
++cfg = Configurator(app_name="cfgtest")
+
+# 2025-06-01 10:50:01.268327
++cfg.get("saved_data.test")
+
+# 2025-06-01 10:50:07.227810
++cfg.get("saved_data.test.a")
+
+# 2025-06-01 10:51:48.932183
++jb("saved_data.test.a")
+
+# 2025-06-01 10:51:55.883607
++jbutils.get_ext("saved_data.test.a")
+
+# 2025-06-01 10:52:54.123820
++cfg.get("saved_data.test.a")
+
+# 2025-06-01 10:56:56.026501
++cfg.get(["saved_data","test"])
+
+# 2025-06-01 10:57:49.322471
++cfg._path_map
+
+# 2025-06-01 11:05:04.528983
++cfg.get(["saved_data","test"])
+
+# 2025-06-01 11:05:08.720461
++cfg.get("saved_data.test.a")
+
+# 2025-06-01 11:06:01.328444
++cfg.trim_key_exts
+
+# 2025-06-01 11:06:29.351889
++cfg.get("saved_data.test.a")
+
+# 2025-06-01 11:07:44.448388
++cfg._get_files_dict("test2.yaml",{"b": 1},["saved_data"])
+
+# 2025-06-01 11:07:56.007798
++cfg.get("saved_data.test2.b")
+
+# 2025-06-01 11:09:45.567781
++jbutils.parse_data_path(dpath)
+
+# 2025-06-01 11:09:57.391068
++jbutils.parse_data_path(dpath,False)
+
+# 2025-06-01 11:10:07.975500
++jbutils.parse_data_path(dpath,split_exts=False)
+
+# 2025-06-01 11:12:16.814482
++cfg.create_file(dpath)
+
+# 2025-06-01 11:12:34.190712
++cfg.create_file("saved_data")
+
+# 2025-06-01 11:12:41.310428
++cfg.create_file("saved_datd.test")
+
+# 2025-06-01 11:12:55.456672
++cfg.create_file("saved_data.test")
+
+# 2025-06-01 11:17:35.989102
++cfg.get_path_from_key("saved_data")
+
+# 2025-06-01 11:23:20.494594
++for root,_,files in os.walk():
++    print(root)
+
+# 2025-06-01 11:23:40.693951
++for root,_,files in os.walk("./empty"):
++    print(root)
+
+# 2025-06-01 11:24:31.156875
++for root,_,files in os.walk(os.path.join(os.getcwd(),"empty")):
++    print(root)
+
+# 2025-06-01 11:27:20.978532
++cfg.get_path_from_key("saved_data")
+
+# 2025-06-01 11:27:41.058494
++cfg._path_map
+
+# 2025-06-01 11:28:35.017843
++cfg.get_path_from_key("saved_data")
+
+# 2025-06-01 11:31:59.719934
++cfg.get_fpath_from_key("saved_data")
+
+# 2025-06-01 11:32:55.350264
++cfg.get_fpath_from_key("saved_data.test3.yaml")
+
+# 2025-06-01 11:33:09.822727
++cfg.get_fpath_from_key("test3.yaml")
+
+# 2025-06-01 11:34:23.261645
++cfg.get_fpath_from_key("data.test3.yaml")
+
+# 2025-06-01 11:52:45.820532
++cfg.create_file("saved_data/test3.yaml",{"c":5})
+
+# 2025-06-01 11:53:18.772236
++cfg.create_file("saved_data/test4.ts",{"c":5})
+
+# 2025-06-01 11:54:31.155530
++cfg.get("saved_data.test4")
+
+# 2025-12-17 03:54:25.421044
++a = JbuConsole.input_choice_dict("Select:\n", choices=options)
+
+# 2025-12-17 03:56:33.383859
++a
+
+# 2025-12-17 03:56:38.478609
++a = JbuConsole.input_choice_dict("Select:\n", choices=options)
+
+# 2025-12-17 03:56:46.948702
++a
+
+# 2025-12-17 03:56:49.401909
++a = JbuConsole.input_choice_dict("Select:\n", choices=options)
+
+# 2025-12-17 03:57:04.121574
++a
