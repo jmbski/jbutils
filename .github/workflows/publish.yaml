@@ -31,7 +31,6 @@ jobs:
       #- run: git config --add --local core.sshCommand 'ssh -i /home/joseph/.ssh/unix-desktop'
       #- run: cat ignorethis.txt
       #- run: git branch
-      - run: git pull --rebase
       - run: git add .
       - run: git commit -m "Bump version"
       - run: git push origin HEAD:main
