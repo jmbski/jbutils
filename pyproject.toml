@@ -23,6 +23,9 @@ tomli = "^2.2.1"
 pymupdf = "^1.26.4"
 json5 = "^0.12.1"
 toml = "^0.10.2"
+gunicorn = "^25.3.0"
+argcomplete = "^3.6.3"
+fastapi = "^0.135.3"
 
 [tool.poetry.scripts]
 jbutils = "jbutils.tools.cli:main"
