@@ -7,8 +7,6 @@ from typing import Annotated, Any
 
 from fastapi import Depends, Request
 
-from jbutils.api import api_utils
-
 
 def get_logger(name: str = "gunicorn.error") -> logging.Logger:
     return logging.getLogger(name)
