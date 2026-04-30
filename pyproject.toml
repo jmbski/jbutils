@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "jbutils"
-version = "0.2.20"
+version = "0.2.21"
 description = ""
 authors = [ "Joseph Bochinski <stirgejr@gmail.com>",]
 readme = "README.md"
