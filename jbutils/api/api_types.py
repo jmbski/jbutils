@@ -9,6 +9,11 @@ from fastapi import Depends, Request
 
 from jbutils.api import api_utils
 
+
+def get_logger(name: str = "gunicorn.error") -> logging.Logger:
+    return logging.getLogger(name)
+
+
 # (request: Request, call_next, logger: ApiLogger):
-ApiLogger = Annotated[logging.Logger, Depends(api_utils.get_logger)]
+ApiLogger = Annotated[logging.Logger, Depends(get_logger)]
 ApiHttpCallback = Callable[[Request, Any, ApiLogger], Any]
