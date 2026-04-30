@@ -56,8 +56,9 @@ def build_server(
     socket: str = "",
     opts: dict | None = None,
     local_callback: Callable[[bool], None] | None = None,
+    http_callback: ApiHttpCallback | None = None,
 ) -> GunicornApp:
-    app = assemble_api(routers)
+    app = assemble_api(routers, http_callback=http_callback)
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
