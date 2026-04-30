@@ -16,6 +16,12 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument(
     "--path", help="URI path to the project directory. Defaults to pwd"
 )
+parser.add_argument(
+    "--get", "-g", action="store_true", help="Retrieve the current version number"
+)
+parser.add_argument(
+    "--tag", "-t", action="store_true", help="tag name of the next version number"
+)
 parser.add_argument("--set", "-s", help="Specific version number to set")
 parser.add_argument(
     "--major",
@@ -77,6 +83,9 @@ def main():
 
     major, minor, patch = get_version_numbers(current_version)
 
+    if args.tag:
+        print(f"v{major}.{minor}.{patch+1}")
+        return
     new_version = None
 
     if args.set:

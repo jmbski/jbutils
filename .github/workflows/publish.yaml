@@ -23,17 +23,17 @@ jobs:
 
       - run: pip install poetry
       - run: poetry install
-      - run: poetry run vmgr -p
-      - run: git config user.name "jmbski"
-      - run: git config user.email "stirgejr@gmail.com"
+      #- run: poetry run vmgr -p
+      #- run: git config user.name "jmbski"
+      #- run: git config user.email "stirgejr@gmail.com"
       #- run: git config remote.origin.url "git@github.com:jmbski/jbutils.git"
       #- run: git config remote.origin.url "https://github.com/jmbski/jbutils.git"
       #- run: git config --add --local core.sshCommand 'ssh -i /home/joseph/.ssh/unix-desktop'
       #- run: cat ignorethis.txt
       #- run: git branch
-      - run: git add .
-      - run: git commit -m "Bump version"
-      - run: git push origin HEAD:main
+      #- run: git add .
+      #- run: git commit -m "Bump version"
+      #- run: git push origin HEAD:main
       - run: poetry build
 
       - uses: pypa/gh-action-pypi-publish@release/v1

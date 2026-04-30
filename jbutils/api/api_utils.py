@@ -4,11 +4,12 @@ import logging
 from collections.abc import Callable
 
 from argcomplete import autocomplete
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from jbutils import consts
 from jbutils.models import GunicornApp
+from jbutils.api.api_types import ApiHttpCallback, ApiLogger
 
 
 def get_logger(name: str = "gunicorn.error") -> logging.Logger:
@@ -16,7 +17,9 @@ def get_logger(name: str = "gunicorn.error") -> logging.Logger:
 
 
 def assemble_api(
-    routers: list[APIRouter] | None = None, base_url: str = "/api/v1"
+    routers: list[APIRouter] | None = None,
+    base_url: str = "/api/v1",
+    http_callback: ApiHttpCallback | None = None,
 ) -> FastAPI:
     app = FastAPI()
 
@@ -27,6 +30,12 @@ def assemble_api(
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    if http_callback is not None:
+
+        @app.middleware("http")
+        async def apply_callback(request: Request, call_next, logger: ApiLogger):
+            http_callback(request, call_next, logger)
 
     @app.get(f"{base_url}/health")
     def health():
