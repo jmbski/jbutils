@@ -14,4 +14,4 @@ def get_logger(name: str = "gunicorn.error") -> logging.Logger:
 
 # (request: Request, call_next, logger: ApiLogger):
 ApiLogger = Annotated[logging.Logger, Depends(get_logger)]
-ApiHttpCallback = Callable[[Request, Any, ApiLogger], Any]
+ApiHttpCallback = Callable[[Request, Any], Any]

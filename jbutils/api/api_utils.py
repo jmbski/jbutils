@@ -34,8 +34,8 @@ def assemble_api(
     if http_callback is not None:
 
         @app.middleware("http")
-        async def apply_callback(request: Request, call_next, logger: ApiLogger):
-            http_callback(request, call_next, logger)
+        async def apply_callback(request: Request, call_next):
+            await http_callback(request, call_next)
 
     @app.get(f"{base_url}/health")
     def health():
