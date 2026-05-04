@@ -115,3 +115,21 @@ def build_server(
         options.update(opts)
 
     return GunicornApp(app, options)
+
+
+""" 
+
+L$5000 covers 5000 prims, so 1 LI per L$
+L$15000 covers 10,000 prims, so 0.66 prims per L$
+1/4 - 5,000 L$
+1/2 - 15,000 L$
+Homesteads - 18,000 L$
+Full Sims - 25,000  L$
+
+PREMIUM (Includes Landscaping, Custom Textures, Detailed Decor) 
+ 
+ 1/4 Sim   - 10,000 L$
+ 1/2 Sim   - 20,000 L$
+ Homesteads - 50,000 L$
+ Full Sims  - 80,000 L$
+"""
