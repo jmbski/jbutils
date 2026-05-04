@@ -23,7 +23,7 @@ tomli = "^2.2.1"
 pymupdf = "^1.26.4"
 json5 = "^0.12.1"
 toml = "^0.10.2"
-gunicorn = "<23"
+gunicorn = "^23"
 argcomplete = "^3.6.3"
 fastapi = "^0.135.3"
 
