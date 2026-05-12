@@ -73,6 +73,8 @@ def _remove_list_values(
 class Base:
     """A base class mixin used for extending common features among other classes"""
 
+    __dict_ignored_fields__: list[str] = []
+
     def __str__(self) -> str:
         if hasattr(self, "__dataclass_fields__"):
             return super().__str__()
@@ -131,6 +133,7 @@ class Base:
                     k: get_value(v)
                     for k, v in value.items()
                     if not k.startswith("_")
+                    and k not in self.__dict_ignored_fields__
                 }
             elif isinstance(value, list):
                 return [get_value(v) for v in value]
