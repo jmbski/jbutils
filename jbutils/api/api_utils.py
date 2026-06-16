@@ -54,11 +54,12 @@ def build_server(
     routers: list[APIRouter] | None = None,
     port: int = 7000,
     socket: str = "",
+    base_url: str = "/api/v1",
     opts: dict | None = None,
     local_callback: Callable[[bool], None] | None = None,
     http_callback: ApiHttpCallback | None = None,
 ) -> GunicornApp:
-    app = assemble_api(routers, http_callback=http_callback)
+    app = assemble_api(routers, base_url=base_url, http_callback=http_callback)
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -89,6 +90,10 @@ def build_server(
     # TODO: add data embedding process outside of logcleaner package
 
     socket = args.socket_name or socket
+
+    if not socket:
+        raise ValueError("No value set for socket name")
+
     port = args.port or port
 
     bind = f"unix:/run/gunicorn/{socket}.sock"
