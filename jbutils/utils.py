@@ -59,6 +59,12 @@ from jbutils.types import (
 yaml = YAML()
 yaml.indent = 2
 
+# Increase the emitter threshold so long keys don't get cut off or turned into complex keys
+yaml.emitter.MAX_SIMPLE_KEY_LENGTH = 1_000_000  #
+
+# Prevent ruamel.yaml from prematurely wrapping/folding lines (default is 80)
+yaml.width = 4096  #
+
 Predicate = Callable[[T], bool]
 IMAGE_EXTS = [
     ".png",
