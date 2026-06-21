@@ -43,6 +43,7 @@ from ruamel.yaml.tokens import CommentToken
 from ruamel.yaml.scalarstring import LiteralScalarString, ScalarString
 from typing_extensions import TypeGuard
 
+from jbutils.consts import RuntimeGlobals
 from jbutils.console import JbuConsole
 from jbutils.types import (
     CommandArg,
@@ -56,14 +57,14 @@ from jbutils.types import (
     StrVarArgsFn,
 )
 
-yaml = YAML()
+""" yaml = YAML()
 yaml.indent = 2
 
 # Increase the emitter threshold so long keys don't get cut off or turned into complex keys
 yaml.emitter.MAX_SIMPLE_KEY_LENGTH = 1_000_000  #
 
 # Prevent ruamel.yaml from prematurely wrapping/folding lines (default is 80)
-yaml.width = 4096  #
+yaml.width = 4096  # """
 
 Predicate = Callable[[T], bool]
 IMAGE_EXTS = [
@@ -113,7 +114,21 @@ def set_encoding(enc: str) -> None:
 
 
 def set_yaml_indent(indent: int) -> None:
-    yaml.indent = 2
+    pass  # yaml.indent = 2
+
+
+def make_yaml() -> YAML:
+    """Create a configured YAML emitter.
+
+    Returns:
+        A ruamel.yaml YAML instance configured for machine-generated output.
+    """
+    yaml = YAML()
+    yaml.indent(mapping=2, sequence=4, offset=2)
+    yaml.width = sys.maxsize
+    yaml.emitter.MAX_SIMPLE_KEY_LENGTH = 1_000_000
+    yaml.default_flow_style = False
+    return yaml
 
 
 @overload
@@ -209,7 +224,7 @@ def read_file(
     with open(path, mode, encoding=encoding, *args, **kwargs) as fs:
         match ext:
             case ".yaml" | ".yml":
-                rtn_value = yaml.load(stream=fs)
+                rtn_value = make_yaml().load(stream=fs)
             case ".json":
                 try:
                     rtn_value = json.load(fs)
@@ -305,7 +320,7 @@ def write_file(
     with open(path, mode, encoding=encoding, *wr_args, **wr_kwargs) as fs:
         match ext:
             case ".yml" | ".yaml":
-                yaml.dump(data, fs, *args, **kwargs)
+                make_yaml().dump(data, fs, *args, **kwargs)
             case ".json":
                 json.dump(data, fs, indent=indent, *args, **kwargs)
             case ".jsonl":
@@ -516,6 +531,9 @@ def print_stack_trace(depth: int = -2):
 
 def debug_print(*args):
     """Print debug statements with a newline before and after"""
+
+    if not RuntimeGlobals.debug:
+        return
 
     strings = list(args)
     strings.insert(0, "\n")
