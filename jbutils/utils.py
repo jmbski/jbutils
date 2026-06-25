@@ -2,16 +2,21 @@
 
 import argparse
 import csv
-import json
+import fnmatch
+import grp
 import inspect
 import io
+import json
+import math
 import os
+import pwd
 import re
 import shlex
+import stat
 import subprocess
 import sys
+import time
 import traceback
-import fnmatch
 
 # _vi = sys.version_info
 # if _vi.major >= 3 and _vi.minor >= 11:
@@ -26,7 +31,6 @@ from platform import platform
 
 from collections.abc import Callable, Iterable, Iterator
 from dataclasses import dataclass
-from time import time
 from typing import Any, Optional, overload, Type
 
 import json5
@@ -41,6 +45,7 @@ from ruamel.yaml import YAML
 from ruamel.yaml.comments import CommentedMap, CommentedSeq
 from ruamel.yaml.tokens import CommentToken
 from ruamel.yaml.scalarstring import LiteralScalarString, ScalarString
+from tabulate import tabulate
 from typing_extensions import TypeGuard
 
 from jbutils.consts import RuntimeGlobals
@@ -1185,8 +1190,8 @@ def to_csv_line(items: list[str]) -> str:
 
 def add_common_args(
     parser: argparse.ArgumentParser,
-    proj_path: str,
-    proj_dir: str = "",
+    proj_path: str | Path,
+    proj_dir: str | Path = "",
     overrides: dict[str, CommandArg] | None = None,
 ) -> Callable[..., argparse.Namespace]:
     overrides = overrides or {}
@@ -1216,8 +1221,13 @@ def add_common_args(
 
         parser.add_argument(*arg.name_or_flags, action=arg.action, help=arg.help)
 
-    proj_path = os.path.abspath(proj_path)
-    proj_dir = proj_dir or os.path.dirname(os.path.dirname(proj_path))
+    if isinstance(proj_path, str):
+        proj_path = Path(proj_path)
+
+    proj_path = proj_path.absolute()
+    proj_dir = proj_dir or proj_path.parent.parent
+    if isinstance(proj_dir, str):
+        proj_dir = Path(proj_dir).absolute()
 
     def handle_common() -> argparse.Namespace:
         code, cd = cmd_args
@@ -1292,9 +1302,9 @@ def joiner(path: str | Path = "", abs_path: bool = False) -> StrVarArgsFn:
 
 
 def profile(func: Callable, *args, **kwargs) -> float:
-    start = time()
+    start = time.time()
     func(*args, **kwargs)
-    return round((time() - start) * 1000, 3)
+    return round((time.time() - start) * 1000, 3)
 
 
 def get_poetry_installs(incldue_vers: bool = True):
@@ -1324,4 +1334,79 @@ def get_poetry_installs(incldue_vers: bool = True):
         print(cmd)
 
 
-p_exists.__doc__ = os.path.exists.__doc__
+def is_num_str(val: str) -> bool:
+    return bool(re.match(r"^-?\d+(\.\d+)?$", val))
+
+
+def convert_size(size_bytes):
+    """Convert a size in bytes to a human-readable string."""
+    if size_bytes == 0:
+        return "0B"
+    size_name = ("B", "K", "M", "G", "T", "P", "E", "Z", "Y")
+    i = int(math.floor(math.log(size_bytes, 1024)))
+    p = math.pow(1024, i)
+    s = round(size_bytes / p, 2)
+    return f"{s}{size_name[i]}"
+
+
+def ls_liah(path: str | Path = "."):
+    """Print output similar to using `ls -liah` in the terminal"""
+
+    if isinstance(path, str):
+        path = Path(path)
+
+    files = os.listdir(path)
+    files_info = []
+
+    for file_name in files:
+        # Get the full path
+        full_path = os.path.join(path, file_name)
+
+        # Get file stats
+        file_stat = os.lstat(full_path)
+
+        # Get permissions
+        permissions = stat.filemode(file_stat.st_mode)
+
+        # Get number of hard links
+        hard_links = file_stat.st_nlink
+
+        # Get UID and GID, convert to names
+        uid_name = pwd.getpwuid(file_stat.st_uid).pw_name
+        gid_name = grp.getgrgid(file_stat.st_gid).gr_name
+
+        # Get file size
+        size = file_stat.st_size
+
+        # Convert size to human-readable form
+        size_human = convert_size(size)
+
+        # Get last modification time
+        mtime = time.strftime("%Y-%m-%d %H:%M", time.localtime(file_stat.st_mtime))
+
+        # Append the information
+        files_info.append(
+            [
+                file_stat.st_ino,
+                permissions,
+                hard_links,
+                uid_name,
+                gid_name,
+                size_human,
+                mtime,
+                file_name,
+            ]
+        )
+
+    # Print in tabular format
+    headers = [
+        "Inode",
+        "Permissions",
+        "Links",
+        "UID",
+        "GID",
+        "Size",
+        "Last Modified",
+        "Name",
+    ]
+    print(tabulate(files_info, headers=headers, tablefmt="plain"))

@@ -22,7 +22,6 @@ from PIL.ImageFile import ImageFile
 from pymupdf import Document
 from ruamel.yaml.comments import CommentedMap, CommentedSeq, Comment
 
-
 # General Typing
 T = TypeVar("T")
 R = TypeVar("R")
