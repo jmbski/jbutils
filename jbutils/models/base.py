@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Self, Optional
 
-from jbutils.types import Predicate
+from jbutils.types import Predicate, VarsCompatible
 
 
 def _update_list_values(
@@ -91,7 +91,7 @@ class Base:
         return self.__str__()
 
     @classmethod
-    def from_obj(cls, obj: dict | None | Self) -> Self:
+    def from_obj(cls, obj: dict | VarsCompatible | None | Self) -> Self:
         """Create a new instance of the calling class based on the object
 
         Args:
@@ -103,6 +103,9 @@ class Base:
                 class instance, or create a new instance of the class and
                 provide the object as kwargs to instantiate it
         """
+
+        if isinstance(obj, VarsCompatible):
+            obj = vars(obj)
 
         if isinstance(obj, dict):
             for key in list(obj.keys()):

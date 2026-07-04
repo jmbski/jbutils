@@ -67,6 +67,11 @@ class StrVarArgsFn(Protocol):
 
 
 @runtime_checkable
+class VarsCompatible:
+    __dict__: dict[str, Any]
+
+
+@runtime_checkable
 class PathJoiner(Protocol):
     """Factory function that assembles a QIcon instance"""
 
