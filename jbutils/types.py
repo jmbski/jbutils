@@ -67,7 +67,7 @@ class StrVarArgsFn(Protocol):
 
 
 @runtime_checkable
-class VarsCompatible:
+class VarsCompatible(Protocol):
     __dict__: dict[str, Any]
 
 
