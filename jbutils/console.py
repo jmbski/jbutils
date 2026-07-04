@@ -12,7 +12,6 @@ from jbutils.consts import RuntimeGlobals
 from jbutils.types import ColorSystem
 from jbutils.models import ConsoleTheme
 
-
 THEME = ConsoleTheme()
 
 
@@ -188,7 +187,7 @@ class JbuConsole:
                 )
 
     @classmethod
-    def input_bool(cls, *args, true_list: list[str] | None = None) -> int:
+    def input_bool(cls, *args, true_list: list[str] | None = None) -> bool:
         """Parse input as bool"""
         true_list = true_list or ["y", "yes"]
         true_list = [val.lower() for val in true_list]
