@@ -2,7 +2,12 @@
 
 from __future__ import annotations
 
-from typing import Any, Self, Optional
+from typing import Any, Optional
+
+try:
+    from typing import Self
+except:
+    from typing_extensions import Self
 
 from jbutils.types import Predicate, VarsCompatible
 
