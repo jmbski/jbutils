@@ -122,7 +122,7 @@ class Base:
             return cls(**obj)
         elif obj is None:
             return cls()
-        return obj
+        return obj  # type: ignore
 
     def to_dict(self) -> dict:
         """Recursively iterate the class and any child values to return
