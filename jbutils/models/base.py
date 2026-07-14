@@ -9,7 +9,7 @@ try:
 except:
     from typing_extensions import Self
 
-from jbutils.types import Predicate, VarsCompatible
+from jbutils.types import Predicate, VarsCompatible, is_vars_compatible
 
 
 def _update_list_values(
@@ -109,7 +109,7 @@ class Base:
                 provide the object as kwargs to instantiate it
         """
 
-        if isinstance(obj, VarsCompatible):
+        if is_vars_compatible(obj):
             obj = vars(obj)
 
         if isinstance(obj, dict):
