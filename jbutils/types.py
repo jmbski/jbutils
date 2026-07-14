@@ -16,6 +16,7 @@ from typing import (
     runtime_checkable,
     Sequence,
     TypeVar,
+    TypeGuard,
 )
 
 from PIL.ImageFile import ImageFile
@@ -66,13 +67,12 @@ class StrVarArgsFn(Protocol):
     def __call__(self, *args: str) -> str: ...
 
 
-@DeprecationWarning
 @runtime_checkable
 class VarsCompatible(Protocol):
     __dict__: dict[str, Any]
 
 
-def is_vars_compatible(obj: Any) -> bool:
+def is_vars_compatible(obj: Any) -> TypeGuard[VarsCompatible]:
     return hasattr(obj, "__dict__")
 
 
