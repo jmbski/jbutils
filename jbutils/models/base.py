@@ -96,7 +96,7 @@ class Base:
         return self.__str__()
 
     @classmethod
-    def from_obj(cls, obj: dict | VarsCompatible | None | Self) -> Self:
+    def from_obj(cls, obj: dict | None | Self) -> Self:
         """Create a new instance of the calling class based on the object
 
         Args:
