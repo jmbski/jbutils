@@ -66,9 +66,14 @@ class StrVarArgsFn(Protocol):
     def __call__(self, *args: str) -> str: ...
 
 
+@DeprecationWarning
 @runtime_checkable
 class VarsCompatible(Protocol):
     __dict__: dict[str, Any]
+
+
+def is_vars_compatible(obj: Any) -> bool:
+    return hasattr(obj, "__dict__")
 
 
 @runtime_checkable
