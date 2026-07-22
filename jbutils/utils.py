@@ -28,6 +28,7 @@ import toml
 
 from pathlib import Path
 from platform import platform
+from string import Template
 
 from collections.abc import Callable, Iterable, Iterator
 from dataclasses import dataclass
@@ -1410,3 +1411,13 @@ def ls_liah(path: str | Path = "."):
         "Name",
     ]
     print(tabulate(files_info, headers=headers, tablefmt="plain"))
+
+
+def apply_template(source: str | Path, mapping: dict[str, str]) -> str:
+    if isinstance(source, Path):
+        if not source.exists():
+            raise FileNotFoundError()
+        source = read_file(source, cast=str)
+
+    template = Template(source)
+    return template.safe_substitute(mapping)
