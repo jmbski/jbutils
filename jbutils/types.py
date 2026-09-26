@@ -39,6 +39,7 @@ FileReadType = str | dict | list | ImageFile | Document
 
 # Function Types
 Predicate = Callable[[T], bool]
+PathPredicate = Callable[[Path], bool]
 Function = Callable[..., Any]
 TFunction = Callable[..., T]
 
@@ -159,6 +160,7 @@ __all__ = [
     "OptList",
     "Opt",
     "PathJoiner",
+    "PathPredicate",
     "Patterns",
     "Predicate",
     "R",

@@ -4,13 +4,13 @@ import os
 import platform
 
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Optional
 
 from platformdirs import user_config_dir
 
 from jbutils.types import T, Patterns, DataPath, DataPathList
 from jbutils import utils
-
 
 """  
 sample_files_1 = {
@@ -40,7 +40,7 @@ CFG_EXTS = [
 ]
 
 
-def get_dirs_files(path: str) -> tuple[list[str], list[str]]:
+def get_dirs_files(path: str | Path) -> tuple[list[str], list[str]]:
     """Get the directories and files from sub_path separated into two lists
 
     Args:
@@ -50,14 +50,15 @@ def get_dirs_files(path: str) -> tuple[list[str], list[str]]:
         tuple[list[str], list[str]]: Two lists containing the directories
             and config files at the provided location (dirs, files)
     """
-
+    path = Path(path)
     dirs = utils.list_paths(path, os.path.isdir)
     files = utils.list_paths(path, lambda fname: utils.get_ext(fname) in CFG_EXTS)
     return dirs, files
 
 
-def get_default_cfg_files(path: str, cfgs: Optional[dict] = None) -> dict:
+def get_default_cfg_files(path: str | Path, cfgs: Optional[dict] = None) -> dict:
     cfgs = cfgs or {}
+    path = Path(path)
 
     dirs, files = get_dirs_files(path)
     for fname in files:
@@ -71,10 +72,122 @@ def get_default_cfg_files(path: str, cfgs: Optional[dict] = None) -> dict:
     return cfgs
 
 
+class _Configurator:
+
+    def __init__(
+        self,
+        app_name: str = "",
+        cfg_dir: str | Path = "",
+        author: str = "",
+        version: str = "",
+        files: list[str] | dict[str, str] | None = None,
+        ignored_paths: Patterns | None = None,
+        roaming: bool = False,
+        ensure_exists: bool = True,
+        use_default_path: bool = True,
+        trim_key_exts: bool = True,
+        reset_cfgs: bool = False,
+        reset_ignored: bool = False,
+        create_cfg_dir: bool = True,
+        use_glob_ignore: bool = True,
+    ) -> None:
+        self.platform = platform.platform()
+        self.app_name = app_name
+        self.cfg_dir = Path(cfg_dir).resolve()
+        self.author = author
+        self.version = version
+        self.files = files
+        self.ignored_paths = ignored_paths
+        self.roaming = roaming
+        self.ensure_exists = ensure_exists
+        self.use_default_path = use_default_path
+        self.trim_key_exts = trim_key_exts
+        self.reset_cfgs = reset_cfgs
+        self.reset_ignored = reset_ignored
+        self.create_cfg_dir = create_cfg_dir
+        self.use_glob_ignore = use_glob_ignore
+
+        self._sep: str = "/"
+        self._data: dict = {}
+        self._path_map: dict[tuple[str | int, ...], str] = {}
+
+    @property
+    def _default_cfg_dir(self) -> Path:
+        return Path(
+            user_config_dir(
+                self.app_name,
+                self.author,
+                self.version,
+                self.roaming,
+                self.ensure_exists,
+            )
+        ).resolve()
+
+    def initialize(self) -> None:
+        self.cfg_dir = Path(self.cfg_dir or self._default_cfg_dir).resolve()
+
+        if self.reset_cfgs:
+            self.clear_cfgs(self.reset_ignored)
+
+        if self.platform == "Windows":
+            self._sep = "\\"
+
+        if not self.cfg_dir.exists():
+            # TODO: improve logging
+            if not self.create_cfg_dir:
+                print(f"[WARNING]: '{self.cfg_dir}' does not exist")
+                return
+
+            print(f"Path: '{self.cfg_dir}' doesn't exist, attempting to create")
+            self.cfg_dir.mkdir(parents=True, exist_ok=True)
+
+        base_cfgs = get_default_cfg_files(self.cfg_dir)
+        """ for k, v in base_cfgs.items():
+            self._get_files_dict(k, v)
+        if isinstance(self.files, list):
+            for file_name in self.files:
+                fpath = os.path.join(self.cfg_dir, file_name)
+                self._set_file_data(fpath, {})
+
+        elif isinstance(self.files, dict):
+            for key, value in self.files.items():
+                self._get_files_dict(key, value)
+
+        self._map_paths() """
+
+    def clear_cfgs(self, reset_ignored: bool | None = None) -> None:
+        self._data = {}
+        self._path_map = {}
+
+        ignored = None if reset_ignored else self.ignored_paths
+
+        if self.cfg_dir.exists():
+            utils.rm_dirs(
+                self.cfg_dir, ignored=ignored, use_glob=self.use_glob_ignore
+            )
+
+    def _get_files_dict(
+        self, prop_key: str, prop: Any, path: list[str] | None = None
+    ):
+        """path = path + [prop_key] if path else [prop_key]
+        path_str = os.path.join(self.cfg_dir, *path)
+
+        if not utils.get_ext(prop_key):
+            os.makedirs(path_str, exist_ok=True)
+            if isinstance(prop, dict):
+                for key, value in prop.items():
+                    self._get_files_dict(key, value, path)
+            elif isinstance(prop, list):
+                for item in prop:
+                    self._set_file_data(path_str, item)
+        else:
+            self._set_file_data(path_str, prop)"""
+
+
 @dataclass
 class Configurator:
     app_name: str = ""
-    cfg_dir: str = ""
+    cfg_dir: str | Path = ""
     author: str = ""
     version: str = ""
 
@@ -107,22 +220,22 @@ class Configurator:
         self.initialize()
 
     def initialize(self) -> None:
-        self.cfg_dir = self.cfg_dir or self._get_cfg_dir()
+        self.cfg_dir = Path(self.cfg_dir or self._get_cfg_dir()).resolve()
+
         if self.reset_cfgs:
             self.clear_cfgs(self.reset_ignored)
-            self._get_cfg_dir()
 
         if self.platform == "Windows":
             self._sep = "\\"
 
-        if not os.path.exists(self.cfg_dir):
+        if not self.cfg_dir.exists():
             # TODO: improve logging
             if not self.create_cfg_dir:
                 print(f"[WARNING]: '{self.cfg_dir}' does not exist")
                 return
 
             print(f"Path: '{self.cfg_dir}' doesn't exist, attempting to create")
-            os.makedirs(self.cfg_dir, exist_ok=True)
+            self.cfg_dir.mkdir(parents=True, exist_ok=True)
 
         base_cfgs = get_default_cfg_files(self.cfg_dir)
         for k, v in base_cfgs.items():
@@ -143,12 +256,6 @@ class Configurator:
         self.initialize()
 
     def get(self, key: DataPath, default: Any = None) -> Any:
-        """if isinstance(key, str) and not self.trim_key_exts:
-        key = key.split(".")
-        if len(key) >= 2:
-            ext = key.pop()
-            fname = key.pop()
-            key.append(f"{fname}{ext}")"""
         key = utils.parse_data_path(key, split_exts=self.trim_key_exts)
         return utils.get_nested(self._data, key, default=default)
 
@@ -268,11 +375,13 @@ class Configurator:
     def _read_cfg_dir(self) -> None:
         pass
 
-    def _get_cfg_dir(self) -> str:
-        return user_config_dir(
-            self.app_name,
-            self.author,
-            self.version,
-            self.roaming,
-            self.ensure_exists,
-        )
+    def _get_cfg_dir(self) -> Path:
+        return Path(
+            user_config_dir(
+                self.app_name,
+                self.author,
+                self.version,
+                self.roaming,
+                self.ensure_exists,
+            )
+        ).resolve()

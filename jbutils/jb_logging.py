@@ -6,10 +6,12 @@ import logging
 import logging.config
 import traceback
 
-import platformdirs
+from pathlib import Path
 
 from collections.abc import Callable
 from logging import LogRecord
+
+import platformdirs
 
 from jbutils import consts
 from jbutils.consts import RuntimeGlobals
@@ -62,13 +64,14 @@ class ColoredFormatter(logging.Formatter):
 
 
 def setup_logging(
-    log_dir: StrVarArgsFn | str = "",
+    log_dir: Path | str = "",
     config: JbConfigType | None = None,
     log_config: dict | None = None,
     app_name: str = "",
     author: str = "",
     version: str = "",
     ensure_exists: bool = True,
+    
 ) -> None:
     """Configure logging.
 
@@ -92,7 +95,7 @@ def setup_logging(
         )
 
     if isinstance(log_dir, str):
-        log_dir = joiner(log_dir)
+        log_dir = Path(log_dir)
 
     if not log_config:
 
@@ -130,7 +133,7 @@ def setup_logging(
                 "class": "logging.handlers.RotatingFileHandler",
                 "level": "DEBUG" if config.debug else "ERROR",
                 "formatter": "file_generic",
-                "filename": log_dir("stdout.log"),
+                "filename": log_dir / "stdout.log",
                 "maxBytes": 104_857_600,  # 100 MB
                 "backupCount": 3,
                 "encoding": "utf-8",
