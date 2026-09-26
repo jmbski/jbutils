@@ -57,6 +57,7 @@ from jbutils.types import (
     T,
     Patterns,
     PathJoiner,
+    PathPredicate,
     DataPath,
     DataPathList,
     SubReturn,
@@ -1421,3 +1422,22 @@ def apply_template(source: str | Path, mapping: dict[str, str]) -> str:
 
     template = Template(source)
     return template.safe_substitute(mapping)
+
+
+def dir_find(
+    path: Path,
+    /,
+    *terms: PathPredicate,
+    match_all: bool = True,
+) -> list[Path]:
+    results = []
+    for root, _, files in path.walk():
+        for fname in files:
+            subpath = root / fname
+            if (
+                match_all
+                and all(term(subpath) for term in terms)
+                or any(term(subpath) for term in terms)
+            ):
+                results.append(subpath)
+    return results
