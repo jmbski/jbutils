@@ -38,6 +38,7 @@ import json5
 import jsonlines
 import pymupdf
 
+from argcomplete import autocomplete
 from jsonlines.jsonlines import JSONValue
 from PIL import Image, ImageFile
 from PIL.ImageFile import ImageFile
@@ -1192,9 +1193,10 @@ def to_csv_line(items: list[str]) -> str:
 
 def add_common_args(
     parser: argparse.ArgumentParser,
-    proj_path: str | Path,
+    code_filepath: str | Path,
     proj_dir: str | Path = "",
     overrides: dict[str, CommandArg] | None = None,
+    use_autocomplete: bool = True,
 ) -> Callable[..., argparse.Namespace]:
     overrides = overrides or {}
 
@@ -1223,20 +1225,22 @@ def add_common_args(
 
         parser.add_argument(*arg.name_or_flags, action=arg.action, help=arg.help)
 
-    if isinstance(proj_path, str):
-        proj_path = Path(proj_path)
+    if isinstance(code_filepath, str):
+        code_filepath = Path(code_filepath)
 
-    proj_path = proj_path.absolute()
-    proj_dir = proj_dir or proj_path.parent.parent
+    code_filepath = code_filepath.absolute()
+    proj_dir = proj_dir or code_filepath.parent.parent
     if isinstance(proj_dir, str):
         proj_dir = Path(proj_dir).absolute()
 
     def handle_common() -> argparse.Namespace:
         code, cd = cmd_args
+        if use_autocomplete:
+            autocomplete(parser)
         args = parser.parse_args()
         arg_props = vars(args)
         if arg_props.get(code.arg_name):
-            cmdx(f'code "{proj_path}"')
+            cmdx(f'code "{code_filepath}"')
             sys.exit(0)
         if arg_props.get(cd.arg_name):
             path = proj_dir
