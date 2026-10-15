@@ -1,9 +1,12 @@
 """Common types for the jbutils package"""
 
 import re
+import json
+
 
 from collections.abc import Callable
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict, is_dataclass
+from enum import Enum
 from pathlib import Path
 from typing import (
     Any,
@@ -144,6 +147,27 @@ class CommandArg:
         self.arg_name = space_re.sub("_", self.arg_name)
 
 
+class CustomJSONEncoder(json.JSONEncoder):
+    """JSON encoder supporting enums and dataclasses."""
+
+    def default(self, o: Any) -> Any:
+        """Convert unsupported objects to JSON-compatible values.
+
+        Args:
+            obj: The object to encode.
+
+        Returns:
+            A JSON-compatible representation.
+        """
+        if isinstance(o, Enum):
+            return o.value
+
+        if not isinstance(o, type) and is_dataclass(o):
+            return asdict(o)  # type: ignore
+
+        return super().default(o)
+
+
 __all__ = [
     "ClassProperty",
     "ColorSystem",
@@ -151,6 +175,7 @@ __all__ = [
     "Comment",
     "CommentedMap",
     "CommentedSeq",
+    "CustomJSONEncoder",
     "FileReadType",
     "JbConfigType",
     "OptStr",

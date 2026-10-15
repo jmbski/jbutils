@@ -32,6 +32,7 @@ from string import Template
 
 from collections.abc import Callable, Iterable, Iterator
 from dataclasses import dataclass
+from enum import Enum
 from typing import Any, Optional, overload, Type
 
 import json5
@@ -45,8 +46,10 @@ from PIL.ImageFile import ImageFile
 from pymupdf import Document
 from ruamel.yaml import YAML
 from ruamel.yaml.comments import CommentedMap, CommentedSeq
-from ruamel.yaml.tokens import CommentToken
+from ruamel.yaml.nodes import Node
+from ruamel.yaml.representer import BaseRepresenter
 from ruamel.yaml.scalarstring import LiteralScalarString, ScalarString
+from ruamel.yaml.tokens import CommentToken
 from tabulate import tabulate
 from typing_extensions import TypeGuard
 
@@ -54,6 +57,7 @@ from jbutils.consts import RuntimeGlobals
 from jbutils.console import JbuConsole
 from jbutils.types import (
     CommandArg,
+    CustomJSONEncoder,
     FileReadType,
     T,
     Patterns,
@@ -125,17 +129,34 @@ def set_yaml_indent(indent: int) -> None:
     pass  # yaml.indent = 2
 
 
+def represent_enum(representer: BaseRepresenter, data: Enum) -> Node:
+    """Represent an enum member using its underlying value.
+
+    Args:
+        representer: The active YAML representer.
+        data: The enum member being serialized.
+
+    Returns:
+        The YAML representation of the enum's value.
+    """
+    return representer.represent_data(data.value)
+
+
 def make_yaml() -> YAML:
     """Create a configured YAML emitter.
 
     Returns:
         A ruamel.yaml YAML instance configured for machine-generated output.
     """
-    yaml = YAML()
+    yaml = YAML(typ="rt")
+
+    yaml.representer.add_multi_representer(Enum, represent_enum)
     yaml.indent(mapping=2, sequence=4, offset=2)
     yaml.width = sys.maxsize
     yaml.emitter.MAX_SIMPLE_KEY_LENGTH = 1_000_000
     yaml.default_flow_style = False
+    yaml.preserve_quotes = True
+
     return yaml
 
 
@@ -235,7 +256,7 @@ def read_file(
                 rtn_value = make_yaml().load(stream=fs)
             case ".json":
                 try:
-                    rtn_value = json.load(fs)
+                    rtn_value = json.load(fs, cls=CustomJSONEncoder)
                 except json.JSONDecodeError as e:
                     if allow_json5:
                         fs.seek(0)
